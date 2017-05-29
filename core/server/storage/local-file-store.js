@@ -39,11 +39,22 @@ LocalFileStore.prototype.save = function (image, targetDir) {
         path.relative(config.paths.imagesPath, targetFilename)).replace(new RegExp('\\' + path.sep, 'g'), '/');
         
         
-        var imgPath = __dirname + '/../../../../../Ghost' + fullUrl.substring("5");
-        fs.copy(imgPath, __dirname+ '/../../../../../client/assets/images/articles/' + fullUrl.substring(21), err => {
-            if(err) return console.log(err);
-            console.log('coppied uploaded file to client');
-        });
+        const pool = require(__dirname+ '/../../../../../server/config/postgresql');
+        var params = [];
+        params.push(targetDir, image);
+        pool.query('INSERT INTO images (image_dir, imageData) VALUES ($1,$2)', params, function(err, result) {
+            if(err) {
+                console.log('============zjebałem coś================');
+            } else {
+                console.log('================smiga! ==================');
+            }
+        }); 
+        
+        // var imgPath = __dirname + '/../../../../../Ghost' + fullUrl.substring("5");
+        // fs.copy(imgPath, __dirname+ '/../../../../../client/assets/images/articles/' + fullUrl.substring(21), err => {
+        //     if(err) return console.log(err);
+        //     console.log('coppied uploaded file to client');
+        // });
 
         return fullUrl;
     }).catch(function (e) {
