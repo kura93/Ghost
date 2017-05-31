@@ -1,8 +1,9 @@
 module.exports = {
     images: {
         id: {type: 'increments', nullable: false, primary: true},
-        image_dir: {type:'string', nullable: false},
-        imageData: { type:'bytea', nullable: false }
+        imagedir: { type:'string', nullable: false},
+        imagedata: { type: 'text', nullable: false },
+        imageid: {type: 'text', nullable: false}
     },
     posts: {
         id: {type: 'increments', nullable: false, primary: true},

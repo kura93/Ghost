@@ -37,24 +37,29 @@ LocalFileStore.prototype.save = function (image, targetDir) {
         // For local file system storage can use relative path so add a slash
         var fullUrl = (config.paths.subdir + '/' + config.paths.imagesRelPath + '/' +
         path.relative(config.paths.imagesPath, targetFilename)).replace(new RegExp('\\' + path.sep, 'g'), '/');
-        
-        
-        const pool = require(__dirname+ '/../../../../../server/config/postgresql');
-        var params = [];
-        params.push(targetDir, image);
-        pool.query('INSERT INTO images (image_dir, imageData) VALUES ($1,$2)', params, function(err, result) {
-            if(err) {
-                console.log('============zjebałem coś================');
+        console.log(image);
+        fs.readFile(image.path, 'base64', function (err, imgData) {
+            if (err) {
+                console.log("nie wczytałem pliku!;<");
+                console.log(err);
             } else {
-                console.log('================smiga! ==================');
+                var pool = require(__dirname + '/../../../../../server/config/postgresql');
+                var params = [];
+                params.push(fullUrl, imgData, image.name);
+                console.log(imgData);
+                pool.query('INSERT INTO images (imagedir, imagedata, imageid) VALUES ($1,$2,$3)', params, function (err, result) {
+                    if (err) {
+                        console.log('FAILED TO SAVE IMAGE IN POSTGRESQL');
+                        console.log(err);
+                    } else {
+                        console.log('SAVED IMAGE IN POSTGRESQL');
+                    }
+                });
             }
-        }); 
+
+
+        });
         
-        // var imgPath = __dirname + '/../../../../../Ghost' + fullUrl.substring("5");
-        // fs.copy(imgPath, __dirname+ '/../../../../../client/assets/images/articles/' + fullUrl.substring(21), err => {
-        //     if(err) return console.log(err);
-        //     console.log('coppied uploaded file to client');
-        // });
 
         return fullUrl;
     }).catch(function (e) {
