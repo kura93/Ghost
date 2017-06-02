@@ -40,13 +40,12 @@ LocalFileStore.prototype.save = function (image, targetDir) {
         console.log(image);
         fs.readFile(image.path, 'base64', function (err, imgData) {
             if (err) {
-                console.log("nie wczytałem pliku!;<");
+                console.log("==COULD NOT READ A FILE===");
                 console.log(err);
             } else {
                 var pool = require(__dirname + '/../../../../../server/config/postgresql');
                 var params = [];
                 params.push(fullUrl, imgData, image.name);
-                console.log(imgData);
                 pool.query('INSERT INTO images (imagedir, imagedata, imageid) VALUES ($1,$2,$3)', params, function (err, result) {
                     if (err) {
                         console.log('FAILED TO SAVE IMAGE IN POSTGRESQL');
@@ -56,8 +55,6 @@ LocalFileStore.prototype.save = function (image, targetDir) {
                     }
                 });
             }
-
-
         });
         
 
