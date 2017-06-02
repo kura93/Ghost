@@ -40,7 +40,7 @@ LocalFileStore.prototype.save = function (image, targetDir) {
         console.log(image);
         fs.readFile(image.path, 'base64', function (err, imgData) {
             if (err) {
-                console.log("==COULD NOT READ A FILE===");
+                console.log('==COULD NOT READ A FILE===');
                 console.log(err);
             } else {
                 var pool = require(__dirname + '/../../../../../server/config/postgresql');
